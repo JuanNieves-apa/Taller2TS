@@ -6,10 +6,9 @@ const seriesCount = series.length;
 const averageSeasons = totalSeasons / seriesCount;
 
 
-// Generar el HTML de la tabla con los datos de las series
-function generateSeriesTable(series) {
+function createTable(series) {
     let tableHTML = `
-        <table class="table table-dark-rows">
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -32,7 +31,7 @@ function generateSeriesTable(series) {
     }
     tableHTML += `
     <tr>
-        <td colspan="3">Season average: ${averageSeasons.toFixed(0)}</td>
+        <td colspan="3">Season average: ${averageSeasons}</td>
     </tr>
 `;
 
@@ -43,10 +42,40 @@ function generateSeriesTable(series) {
     return tableHTML;
 }
 
+function showDetails(serie) {
+    const detailContainer = document.getElementById("seriesDetailContainer");
+    if (detailContainer) {
+        detailContainer.innerHTML = `
+            <div class="card">
+                <img src="${serie.image}" class="card-img-top" alt="${serie.name}">
+                <div class="card-header">
+                    <h5>${serie.name}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Channel:</strong> ${serie.channel}</p>
+                    <p><strong>Seasons:</strong> ${serie.seasons}</p>
+                    <p><strong>Description:</strong> ${serie.description || "No description available."}</p>
+                    <a href="${serie.url}" class="btn btn-primary" target="_blank">Watch Now</a>
+                </div>
+            </div>
+        `;
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const tableContainer = document.getElementById("seriesTableContainer");
     if (tableContainer) {
-        tableContainer.innerHTML = generateSeriesTable(series);
+        tableContainer.innerHTML = createTable(series);
+
+        const serieRows = document.querySelectorAll('.serie-row');
+        serieRows.forEach(row => {
+            row.addEventListener('click', () => {
+                const serieId = row.getAttribute('data-id');
+                const selectedSerie = series.find(serie => serie.id == serieId);
+                showDetails(selectedSerie);
+            });
+        });
+
     }
 });
-//finalizado Taller 1
+
